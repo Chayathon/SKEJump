@@ -1,5 +1,3 @@
-import aracde.key
-
 MOVEMENT_SPEED = 5
 
 class SKEman:
@@ -17,7 +15,7 @@ class World:
         self.width = width
         self.height = height
 
-        self.man = SKEman(self, width//2, height//2)
+        self.ske = SKEman(self, width//2, height//2)
 
         self.score = 0
 
