@@ -15,17 +15,30 @@ class GameWindow(arcade.Window):
 
         self.SKE = SKE(self.world.ske, 'images/SKE_N.png')
 
+        self.slope = SlopeSprite(self.world.slope)
+
     def update(self, delta):
-        pass
+        self.world.update(delta)
+        self.SKE.update()
     
     def on_draw(self):
         arcade.start_render()
 
         self.SKE.draw()
 
+        self.slope.draw()
+
+        arcade.draw_rectangle_filled(SCREEN_WIDTH//2, 50, 
+                                    SCREEN_WIDTH, 100, 
+                                    arcade.color.SNOW)
+
+
         arcade.draw_text(str(self.world.score),
                             self.width//2, self.height - 40,
                             arcade.color.WHITE, 30)
+
+    def on_key_press(self, key, key_modifiers):
+        self.world.on_key_press(key, key_modifiers)
 
 
 class SKE(arcade.Sprite):
@@ -40,6 +53,21 @@ class SKE(arcade.Sprite):
         self.model = model
         self.center_x = self.model.x
         self.center_y = self.model.y
+    
+    def update(self):
+        self.center_x = self.model.x
+        self.center_y = self.model.y
+
+
+class SlopeSprite:
+    def __init__(self, model):
+        self.model = model
+
+
+    def draw(self):
+        arcade.draw_ellipse_filled(self.model.x, self.model.y,
+                            20, 20, arcade.color.SNOW)
+        
 
 
 def main():
