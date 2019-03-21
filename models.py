@@ -2,16 +2,13 @@ import arcade.key
 from random import randint
 
 N_JUMP = 0
-P_JUMP = 1
 
-KEY_OFFSETS = {N_JUMP: 120,
-                P_JUMP: 200}
+KEY_OFFSETS = {N_JUMP: 120}
 
-KEY_MAP = {arcade.key.SPACE : N_JUMP,
-            arcade.key.UP : P_JUMP}
+KEY_MAP = {arcade.key.SPACE : N_JUMP}
 
 
-GRAVITY = 5
+GRAVITY = 10
 GROUND = 140
 MOVEMENT_SPEED = 5
 
@@ -21,8 +18,12 @@ class SKEman:
         self.x = x
         self.y = y
 
+        self.y_before2jump = 0
+
         self.jump = False
         self.p_jump = False
+
+        self.jump_counting = 0
 
         self.key = False
 
@@ -30,29 +31,36 @@ class SKEman:
         if self.y > GROUND and not self.key:
             self.y -= GRAVITY
         
-        if self.jump:
+        if self.jump and self.jump_counting == 1:
             if GROUND + KEY_OFFSETS[N_JUMP] > self.y:
-                self.y += 5
+                self.y += 10
             else:
                 self.jump = False
                 self.key = False
         
-        elif self.p_jump:
-            if GROUND + KEY_OFFSETS[P_JUMP] > self.y:
-                self.y += 5
+        elif self.jump and self.jump_counting == 2:
+            if self.y_before2jump + KEY_OFFSETS[N_JUMP] > self.y:
+                self.y += 10
             else:
-                self.p_jump = False
+                self.jump = False
                 self.key = False
+
+        else:
+            self.jump = False
+            self.key = False
+        
+        if self.y == GROUND:
+            self.jump_counting = 0
 
 
     def check_key(self, key_offsets):
         if key_offsets == 0:
             self.jump = True
             self.key = True
-        
-        elif key_offsets == 1:
-            self.p_jump = True
-            self.key = True
+            self.jump_counting += 1
+
+            if self.jump_counting == 2:
+                self.y_before2jump = self.y
         
 
 class World:
@@ -77,9 +85,8 @@ class World:
         self.add_score()
 
     def on_key_press(self, key, key_modifiers):
-        if self.ske.y == GROUND:
-            if key in KEY_MAP:
-                self.ske.check_key(KEY_MAP[key])
+        if key in KEY_MAP:
+            self.ske.check_key(KEY_MAP[key])
 
 
 
