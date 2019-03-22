@@ -9,7 +9,8 @@ class GameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
-        arcade.set_background_color(arcade.color.SKY_BLUE)
+        # arcade.set_background_color(arcade.color.SKY_BLUE)
+        self.BG = arcade.Sprite(filename='images/backgroundForest.png', center_x=width//2, center_y=height//2)
 
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -23,6 +24,8 @@ class GameWindow(arcade.Window):
     
     def on_draw(self):
         arcade.start_render()
+
+        self.BG.draw()
 
         self.SKE.draw()
 

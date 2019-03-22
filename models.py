@@ -31,23 +31,21 @@ class SKEman:
         if self.y > GROUND and not self.key:
             self.y -= GRAVITY
         
-        if self.jump and self.jump_counting == 1:
-            if GROUND + KEY_OFFSETS[N_JUMP] > self.y:
+        if self.jump:
+
+            if GROUND + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 1:
                 self.y += 10
-            else:
-                self.jump = False
-                self.key = False
-        
-        elif self.jump and self.jump_counting == 2:
-            if self.y_before2jump + KEY_OFFSETS[N_JUMP] > self.y:
+
+            elif self.y_before2jump + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 2:
                 self.y += 10
+
             else:
                 self.jump = False
                 self.key = False
 
-        else:
-            self.jump = False
-            self.key = False
+        # else:
+        #     self.jump = False
+        #     self.key = False
         
         if self.y == GROUND:
             self.jump_counting = 0
