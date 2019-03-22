@@ -27,6 +27,11 @@ class SKEman:
 
         self.key = False
 
+        self.is_dead = False
+    
+    def die(self):
+        self.is_dead = True
+
     def update(self, delta):
         if self.y > GROUND and not self.key:
             self.y -= GRAVITY
@@ -42,10 +47,6 @@ class SKEman:
             else:
                 self.jump = False
                 self.key = False
-
-        # else:
-        #     self.jump = False
-        #     self.key = False
         
         if self.y == GROUND:
             self.jump_counting = 0
@@ -66,9 +67,9 @@ class World:
         self.width = width
         self.height = height
 
-        self.ske = SKEman(self, 200, GROUND)
+        self.barrier = Barrier(self, 600, GROUND+20)
 
-        self.slope = Slope(self, randint(850, 900), 100)
+        self.ske = SKEman(self, 200, GROUND)
 
         self.score = 0
 
@@ -78,7 +79,7 @@ class World:
     def update(self, delta):
         self.ske.update(delta)
 
-        self.slope.update(delta)
+        self.barrier.update()
 
         self.add_score()
 
@@ -87,42 +88,11 @@ class World:
             self.ske.check_key(KEY_MAP[key])
 
 
-
-class Wolf:
-    def __init__(self, world, x, y):
-        self.x = x
-        self.y = y
-        self.world = world
-    
-    def update(self):
-        self.x -= MOVEMENT_SPEED
-
-
-class Tree:
+class Barrier:
     def __init__(self, world, x, y):
         self.x = x
         self.y = y
         self.world = world
 
     def update(self):
-        self.x -= MOVEMENT_SPEED
-
-
-class Barier:
-    def __init__(self, world, x, y):
-        self.x = x
-        self.y = y
-        self.world = world
-    
-    def update(self):
-        self.x -= MOVEMENT_SPEED
-
-
-class Slope:
-    def __init__(self, world, x, y):
-        self.x = x
-        self.y = y
-        self.world = world
-
-    def update(self, delta):
         self.x -= MOVEMENT_SPEED

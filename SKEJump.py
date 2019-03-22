@@ -9,18 +9,29 @@ class GameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
-        # arcade.set_background_color(arcade.color.SKY_BLUE)
-        self.BG = arcade.Sprite(filename='images/backgroundForest.png', center_x=width//2, center_y=height//2)
+        self.BG = arcade.Sprite(filename='images/backgroundForest.png', 
+                                center_x=width//2, 
+                                center_y=height//2)
+
 
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         self.SKE = SKE(self.world.ske, 'images/SKE_N.png')
 
-        self.slope = SlopeSprite(self.world.slope)
+        self.barrier = BarrierSprite(self.world.barrier, 'images/treePineFrozen.png')
+
+    def hits(self):
+        if arcade.check_for_collision(self.SKE, self.barrier):
+            self.world.ske.is_dead = True
 
     def update(self, delta):
-        self.world.update(delta)
-        self.SKE.update()
+
+        self.hits()
+
+        if not self.world.ske.is_dead:
+            self.world.update(delta)
+            self.SKE.update()
+            self.barrier.update()
     
     def on_draw(self):
         arcade.start_render()
@@ -29,7 +40,8 @@ class GameWindow(arcade.Window):
 
         self.SKE.draw()
 
-        self.slope.draw()
+        self.barrier.draw()
+
 
         arcade.draw_rectangle_filled(SCREEN_WIDTH//2, 50, 
                                     SCREEN_WIDTH, 100, 
@@ -60,17 +72,19 @@ class SKE(arcade.Sprite):
     def update(self):
         self.center_x = self.model.x
         self.center_y = self.model.y
-
-
-class SlopeSprite:
-    def __init__(self, model):
-        self.model = model
-
-
-    def draw(self):
-        arcade.draw_ellipse_filled(self.model.x, self.model.y,
-                            20, 20, arcade.color.SNOW)
         
+
+class BarrierSprite(arcade.Sprite):
+    def __init__(self, model, file_name):
+        super().__init__(filename=file_name, scale=0.5)
+
+        self.model = model
+        self.center_x = self.model.x
+        self.center_y = self.model.y
+    
+    def update(self):
+        self.center_x = self.model.x
+        self.center_y = self.model.y
 
 
 def main():
