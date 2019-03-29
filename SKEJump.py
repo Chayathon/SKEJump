@@ -1,5 +1,5 @@
 import arcade
-from models import World
+from models import World, GROUND
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -7,12 +7,9 @@ SCREEN_HEIGHT = 600
 
 class GameWindow(arcade.Window):
     def __init__(self, width, height):
-        super().__init__(width, height)
+        super().__init__(width, height, title='SKE Jump (Demo)')
 
-        self.BG = arcade.Sprite(filename='images/backgroundForest.png', 
-                                center_x=width//2, 
-                                center_y=height//2)
-
+        self.BG = arcade.load_texture('images/backgroundForest.png')
 
         self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
@@ -36,7 +33,9 @@ class GameWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
 
-        self.BG.draw()
+        arcade.draw_texture_rectangle(SCREEN_WIDTH//2, SCREEN_HEIGHT//2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT,
+                                      texture=self.BG)
 
         self.SKE.draw()
 
@@ -68,10 +67,21 @@ class SKE(arcade.Sprite):
         self.model = model
         self.center_x = self.model.x
         self.center_y = self.model.y
+
+        self.change_angle = 1
     
     def update(self):
         self.center_x = self.model.x
         self.center_y = self.model.y
+
+        if self.model.y == GROUND and self.angle == 0.0:
+            pass
+
+        elif self.model.y == GROUND and self.angle != 0.0:
+            self.angle += self.change_angle
+
+        else:
+            self.angle -= self.change_angle
         
 
 class BarrierSprite(arcade.Sprite):
