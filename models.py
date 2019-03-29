@@ -10,7 +10,7 @@ KEY_MAP = {arcade.key.SPACE : N_JUMP}
 
 GRAVITY = 10
 GROUND = 140
-MOVEMENT_SPEED = 5
+MOVEMENT_SPEED = 10
 
 class SKEman:
     def __init__(self, world, x, y):
@@ -96,3 +96,8 @@ class Barrier:
 
     def update(self):
         self.x -= MOVEMENT_SPEED
+
+        if self.x <= 0:
+            from random import randint
+            from SKEJump import SCREEN_WIDTH
+            self.x = randint(SCREEN_WIDTH + 30, SCREEN_WIDTH + 100)
