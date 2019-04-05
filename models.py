@@ -3,7 +3,7 @@ from random import randint
 
 N_JUMP = 0
 
-KEY_OFFSETS = {N_JUMP: 120}
+KEY_OFFSETS = {N_JUMP: 150}
 
 KEY_MAP = {arcade.key.SPACE : N_JUMP}
 
@@ -11,6 +11,9 @@ KEY_MAP = {arcade.key.SPACE : N_JUMP}
 GRAVITY = 10
 GROUND = 140
 MOVEMENT_SPEED = 10
+
+# Todo : import map from .txt, generate map, new conditions
+map_S = 0
 
 class SKEman:
     def __init__(self, world, x, y):
@@ -33,6 +36,8 @@ class SKEman:
         self.is_dead = True
 
     def update(self, delta):
+        self.x += MOVEMENT_SPEED
+
         if self.y > GROUND and not self.key:
             self.y -= GRAVITY
         
@@ -95,9 +100,11 @@ class Barrier:
         self.world = world
 
     def update(self):
-        self.x -= MOVEMENT_SPEED
+        # self.x -= MOVEMENT_SPEED
 
-        if self.x <= 0:
+        # if self.x <= 0:
+        if self.x <= self.world.ske.x - 200:
             from random import randint
             from SKEJump import SCREEN_WIDTH
-            self.x = randint(SCREEN_WIDTH + 30, SCREEN_WIDTH + 100)
+            self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
+                             self.world.ske.x + SCREEN_WIDTH + 100)
