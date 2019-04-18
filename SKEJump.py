@@ -1,6 +1,6 @@
 import arcade
 import time, collections
-from models import World, GROUND
+from models import World, GROUND, check_platform, GRAVITY
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -42,15 +42,10 @@ class GameWindow(arcade.Window):
 
         self.barrier = BarrierSprite(self.world.barrier, 'images/treePineFrozen.png')
 
-        # self.platform = arcade.SpriteList()
-        # self.platform = arcade.Sprite(filename='images/slice01.png',
-        #                                 )
 
         self.fps = FPSCounter()
 
         self.position = []
-
-        # self.generate_map()
         
 
     def change_view(self):
@@ -61,50 +56,6 @@ class GameWindow(arcade.Window):
     def hits(self):
         if arcade.check_for_collision(self.SKE, self.barrier):
             self.world.ske.is_dead = True
-
-    # def generate_map(self):
-    #     self.platform_x = 35
-    #     self.platform_y = 35
-
-    #     for i in map:
-    #         for j in i:
-
-    #             if j == 'P':
-
-    #                 self.platform.append(arcade.Sprite('images/slice01.png',
-    #                                                     center_x=self.platform_x,
-    #                                                     center_y=self.platform_y))
-                    
-
-    #             elif j == '0':
-    #                 # self.platform = arcade.SpriteList('images/slice33.png', 
-    #                 #                               center_x=self.platform_x, 
-    #                 #                               center_y=self.platform_y)
-
-    #                 self.platform.append(arcade.Sprite('images/slice33.png',
-    #                                                     center_x=self.platform_x,
-    #                                                     center_y=self.platform_y))
-                
-
-    #             self.platform_x += 70
-    #         self.platform_y += 70
-            
-    #         # self.platform.draw()
-
-    # def generate_map(self):
-    #     for i in range(len(map)):
-    #         for j in range(len(map[i])):
-    #             if map[i][j] == 'P':
-    #                 self.position.append([j, i])
-    #     print(self.position)
-
-    # def draw_map(self):
-        
-    #     box = arcade.Sprite('images/treePineFrozen.png', center_x=SCREEN_WIDTH//2, center_y=100, scale=10)
-    #     # for position in self.position:
-    #     #     box.set_position(int(position[0]) , int(position[1]))
-    #     box.draw()
-
 
 
     def update(self, delta):
@@ -119,21 +70,20 @@ class GameWindow(arcade.Window):
             self.SKE.update()
             self.barrier.update()
 
-            self.change_view()
-            from models import MOVEMENT_SPEED
-            self.BG.center_x += MOVEMENT_SPEED
-        
-            print(self.fps.get_fps())
-        
-        # self.draw_map()
+            # self.change_view()
+            # from models import MOVEMENT_SPEED
+            # self.BG.center_x += MOVEMENT_SPEED
+
+            self.map.update_animation()
+
+            # set ground
+            # GROUND = check_platform(self.SKE, self.map, GROUND)
+            
+            # print(self.fps.get_fps())
     
     
     def on_draw(self):
         arcade.start_render()
-
-        # arcade.draw_texture_rectangle(SCREEN_WIDTH//2, SCREEN_HEIGHT//2,
-        #                               SCREEN_WIDTH, SCREEN_HEIGHT,
-        #                               texture=self.BG)
 
         self.BG.draw()
 
@@ -143,19 +93,10 @@ class GameWindow(arcade.Window):
 
         self.map.draw()
 
-
-        # arcade.draw_rectangle_filled(SCREEN_WIDTH//2, 50, 
-        #                             SCREEN_WIDTH, 100, 
-        #                             arcade.color.SNOW)
-
-        
-
         # arcade.draw_text(str(self.world.score),
         #                     self.width//2, self.height - 40,
         #                     arcade.color.WHITE, 30)
         self.fps.tick()
-
-        # self.generate_map()
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
@@ -181,14 +122,20 @@ class SKE(arcade.Sprite):
         self.center_x = self.model.x
         self.center_y = self.model.y
 
-        if self.model.y == GROUND and self.angle == 0.0:
-            pass
+        print(self.center_y, GROUND)
+        print(self.model.key)
 
-        elif self.model.y == GROUND and self.angle != 0.0:
-            self.angle += self.change_angle
+        # if not self.model.key and self.center_y > GROUND:
+        #     self.center_y -= GRAVITY
 
-        else:
-            self.angle -= self.change_angle
+        # if self.model.y == GROUND and self.angle == 0.0:
+        #     pass
+
+        # elif self.model.y == GROUND and self.angle != 0.0:
+        #     self.angle += self.change_angle
+
+        # else:
+        #     self.angle -= self.change_angle
 
         
 
@@ -205,54 +152,65 @@ class BarrierSprite(arcade.Sprite):
         self.center_y = self.model.y
 
 
+class Box(arcade.Sprite):
+    def __init__(self, file_name, model_x, model_y):
+        super().__init__(filename=file_name,
+                         center_x=model_x, 
+                         center_y=model_y)
+
+    def update_animation(self):
+        from models import MOVEMENT_SPEED
+        self.center_x -= MOVEMENT_SPEED
+
+
+
 class Map(arcade.SpriteList):
     def __init__(self):
         super().__init__()
         self.generate_map()
 
-
     def generate_map(self):
         for i in range(len(map)):
             for j in range(len(map[i])):
                 if map[i][j] == 'P':
-                    self.append(arcade.Sprite('images/slice01.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice01.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
                 elif map[i][j] == '0':
-                    self.append(arcade.Sprite('images/slice33.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice33.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
                 elif map[i][j] == 'U':
-                    self.append(arcade.Sprite('images/slice07.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice07.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
                 elif map[i][j] == 'D':
-                    self.append(arcade.Sprite('images/slice06.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice06.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
                 
                 elif map[i][j] == 'u':
-                    self.append(arcade.Sprite('images/slice18.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice18.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
                 elif map[i][j] == 'd':
-                    self.append(arcade.Sprite('images/slice17.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice17.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
                 
                 elif map[i][j] == 'T':
-                    self.append(arcade.Sprite('images/slice21.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice21.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
                 elif map[i][j] == 'B':
-                    self.append(arcade.Sprite('images/slice22.png', 
-                                              center_x= 35 + j * 70,
-                                              center_y= 35 + i * 70))
+                    self.append(Box('images/slice22.png', 
+                                    35 + j * 70,
+                                    35 + i * 70))
 
 def main():
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)

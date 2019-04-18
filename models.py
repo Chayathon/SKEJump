@@ -12,8 +12,6 @@ GRAVITY = 10
 GROUND = 140
 MOVEMENT_SPEED = 10
 
-# Todo : import map from .txt, generate map, new conditions
-map_S = 0
 
 class SKEman:
     def __init__(self, world, x, y):
@@ -35,12 +33,13 @@ class SKEman:
     def die(self):
         self.is_dead = True
 
-    def update(self, delta):
-        self.x += MOVEMENT_SPEED
 
-        if self.y > GROUND and not self.key:
-            self.y -= GRAVITY
-        
+    def update(self, delta):
+        # self.x += MOVEMENT_SPEED
+
+        # if self.y > GROUND and not self.key:
+        #     self.y -= GRAVITY
+        print(self.jump)
         if self.jump:
 
             if GROUND + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 1:
@@ -55,6 +54,9 @@ class SKEman:
         
         if self.y == GROUND:
             self.jump_counting = 0
+        
+        elif self.y > GROUND and not self.jump:
+            self.y -= GRAVITY
 
 
     def check_key(self, key_offsets):
@@ -100,11 +102,32 @@ class Barrier:
         self.world = world
 
     def update(self):
-        # self.x -= MOVEMENT_SPEED
+        self.x -= MOVEMENT_SPEED
 
-        # if self.x <= 0:
-        if self.x <= self.world.ske.x - 200:
+        if self.x <= 0:
+        # if self.x <= self.world.ske.x - 200:
             from random import randint
             from SKEJump import SCREEN_WIDTH
             self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
                              self.world.ske.x + SCREEN_WIDTH + 100)
+
+
+def check_platform(player, lst, ground):
+        # has_platform = arcade.check_for_collision_with_list(player, lst)
+
+        # if len(has_platform) > 0:
+        #     ground += 70
+
+        # # elif not player.model.jump:
+        # else:
+        #     ground -= 70
+        
+        # return ground
+
+        for platform in lst:
+            if player.center_x == (platform.center_x):
+                ground = platform.center_y
+
+        print(player.center_y, ' = ', ground)
+
+        return ground
