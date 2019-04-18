@@ -35,11 +35,6 @@ class SKEman:
 
 
     def update(self, delta):
-        # self.x += MOVEMENT_SPEED
-
-        # if self.y > GROUND and not self.key:
-        #     self.y -= GRAVITY
-        print(self.jump)
         if self.jump:
 
             if GROUND + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 1:
@@ -105,7 +100,6 @@ class Barrier:
         self.x -= MOVEMENT_SPEED
 
         if self.x <= 0:
-        # if self.x <= self.world.ske.x - 200:
             from random import randint
             from SKEJump import SCREEN_WIDTH
             self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
@@ -113,21 +107,10 @@ class Barrier:
 
 
 def check_platform(player, lst, ground):
-        # has_platform = arcade.check_for_collision_with_list(player, lst)
+    for platform in lst:
+        if player.center_x == (platform.center_x):
+            ground = platform.center_y
 
-        # if len(has_platform) > 0:
-        #     ground += 70
+    print(player.center_y, ' = ', ground)
 
-        # # elif not player.model.jump:
-        # else:
-        #     ground -= 70
-        
-        # return ground
-
-        for platform in lst:
-            if player.center_x == (platform.center_x):
-                ground = platform.center_y
-
-        print(player.center_y, ' = ', ground)
-
-        return ground
+    return ground

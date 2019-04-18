@@ -70,14 +70,7 @@ class GameWindow(arcade.Window):
             self.SKE.update()
             self.barrier.update()
 
-            # self.change_view()
-            # from models import MOVEMENT_SPEED
-            # self.BG.center_x += MOVEMENT_SPEED
-
             self.map.update_animation()
-
-            # set ground
-            # GROUND = check_platform(self.SKE, self.map, GROUND)
             
             # print(self.fps.get_fps())
     
@@ -93,10 +86,15 @@ class GameWindow(arcade.Window):
 
         self.map.draw()
 
-        # arcade.draw_text(str(self.world.score),
-        #                     self.width//2, self.height - 40,
-        #                     arcade.color.WHITE, 30)
+        arcade.draw_text(str(self.world.score),
+                            self.width//2, self.height - 40,
+                            arcade.color.WHITE, 30)
+
         self.fps.tick()
+
+        arcade.draw_text(f'fps {self.fps.get_fps():.0f} ms',
+                        SCREEN_WIDTH - 70, SCREEN_HEIGHT - 20,
+                        arcade.color.RED, 10)
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
@@ -121,9 +119,6 @@ class SKE(arcade.Sprite):
     def update(self):
         self.center_x = self.model.x
         self.center_y = self.model.y
-
-        print(self.center_y, GROUND)
-        print(self.model.key)
 
         # if not self.model.key and self.center_y > GROUND:
         #     self.center_y -= GRAVITY
@@ -152,7 +147,7 @@ class BarrierSprite(arcade.Sprite):
         self.center_y = self.model.y
 
 
-class Box(arcade.Sprite):
+class Block(arcade.Sprite):
     def __init__(self, file_name, model_x, model_y):
         super().__init__(filename=file_name,
                          center_x=model_x, 
@@ -162,6 +157,8 @@ class Box(arcade.Sprite):
         from models import MOVEMENT_SPEED
         self.center_x -= MOVEMENT_SPEED
 
+        if self.center_x < (-100):
+            self.kill()
 
 
 class Map(arcade.SpriteList):
@@ -173,42 +170,42 @@ class Map(arcade.SpriteList):
         for i in range(len(map)):
             for j in range(len(map[i])):
                 if map[i][j] == 'P':
-                    self.append(Box('images/slice01.png', 
+                    self.append(Block('images/slice01.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
                 elif map[i][j] == '0':
-                    self.append(Box('images/slice33.png', 
+                    self.append(Block('images/slice33.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
                 elif map[i][j] == 'U':
-                    self.append(Box('images/slice07.png', 
+                    self.append(Block('images/slice07.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
                 elif map[i][j] == 'D':
-                    self.append(Box('images/slice06.png', 
+                    self.append(Block('images/slice06.png', 
                                     35 + j * 70,
                                     35 + i * 70))
                 
                 elif map[i][j] == 'u':
-                    self.append(Box('images/slice18.png', 
+                    self.append(Block('images/slice18.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
                 elif map[i][j] == 'd':
-                    self.append(Box('images/slice17.png', 
+                    self.append(Block('images/slice17.png', 
                                     35 + j * 70,
                                     35 + i * 70))
                 
                 elif map[i][j] == 'T':
-                    self.append(Box('images/slice21.png', 
+                    self.append(Block('images/slice21.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
                 elif map[i][j] == 'B':
-                    self.append(Box('images/slice22.png', 
+                    self.append(Block('images/slice22.png', 
                                     35 + j * 70,
                                     35 + i * 70))
 
