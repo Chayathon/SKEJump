@@ -9,7 +9,7 @@ KEY_MAP = {arcade.key.SPACE : N_JUMP}
 
 
 GRAVITY = 10
-GROUND = 140
+GROUND = 175
 MOVEMENT_SPEED = 10
 
 
@@ -37,7 +37,7 @@ class SKEman:
     def update(self, delta):
         if self.jump:
 
-            if GROUND + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 1:
+            if self.world.ground + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 1:
                 self.y += 10
 
             elif self.y_before2jump + KEY_OFFSETS[N_JUMP] > self.y and self.jump_counting == 2:
@@ -47,10 +47,10 @@ class SKEman:
                 self.jump = False
                 self.key = False
         
-        if self.y == GROUND:
+        if self.y == self.world.ground:
             self.jump_counting = 0
         
-        elif self.y > GROUND and not self.jump:
+        elif self.y > self.world.ground and not self.jump:
             self.y -= GRAVITY
 
 
@@ -72,6 +72,9 @@ class World:
         self.barrier = Barrier(self, 600, GROUND+20)
 
         self.ske = SKEman(self, 200, GROUND)
+
+        self.ground = GROUND
+        self.gravity = GRAVITY
 
         self.score = 0
 
@@ -109,8 +112,9 @@ class Barrier:
 def check_platform(player, lst, ground):
     for platform in lst:
         if player.center_x == (platform.center_x):
+            # print(player.center_y , ' @@ ', platform.center_y)
             ground = platform.center_y
 
-    print(player.center_y, ' = ', ground)
+    # print(player.center_y, ' = ', ground)
 
     return ground

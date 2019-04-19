@@ -1,12 +1,12 @@
 import arcade
 import time, collections
-from models import World, GROUND, check_platform, GRAVITY
+from models import World, check_platform
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 
-map = list(reversed(open('map_1.txt').read().splitlines()))
+map = list(reversed(open('map_0.txt').read().splitlines()))
 
 class FPSCounter:
     def __init__(self):
@@ -70,9 +70,9 @@ class GameWindow(arcade.Window):
             self.SKE.update()
             self.barrier.update()
 
-            self.map.update_animation()
-            
-            # print(self.fps.get_fps())
+            # self.map.update_animation()
+
+            # self.world.ground = check_platform(self.SKE, self.map, self.world.ground) + 35
     
     
     def on_draw(self):
@@ -208,6 +208,9 @@ class Map(arcade.SpriteList):
                     self.append(Block('images/slice22.png', 
                                     35 + j * 70,
                                     35 + i * 70))
+
+    # def update(self):
+    #     self.generate_map()
 
 def main():
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
