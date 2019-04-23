@@ -107,14 +107,3 @@ class Barrier:
             from SKEJump import SCREEN_WIDTH
             self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
                              self.world.ske.x + SCREEN_WIDTH + 100)
-
-
-def check_platform(player, lst, ground):
-    for platform in lst:
-        if player.center_x == (platform.center_x):
-            # print(player.center_y , ' @@ ', platform.center_y)
-            ground = platform.center_y
-
-    # print(player.center_y, ' = ', ground)
-
-    return ground

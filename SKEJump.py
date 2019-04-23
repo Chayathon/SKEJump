@@ -5,7 +5,6 @@ from models import World, check_platform
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-
 map = list(reversed(open('map_0.txt').read().splitlines()))
 
 class FPSCounter:
@@ -25,6 +24,7 @@ class FPSCounter:
             return 0
         else:
             return len(self.frame_times) / sum(self.frame_times)
+
 
 class GameWindow(arcade.Window):
     def __init__(self, width, height):
@@ -47,7 +47,6 @@ class GameWindow(arcade.Window):
 
         self.position = []
         
-
     def change_view(self):
         arcade.set_viewport(self.SKE.center_x - 200,
                             self.SKE.center_x - 200 + SCREEN_WIDTH,
@@ -57,23 +56,14 @@ class GameWindow(arcade.Window):
         if arcade.check_for_collision(self.SKE, self.barrier):
             self.world.ske.is_dead = True
 
-
     def update(self, delta):
-
         self.BG.draw()
         self.hits()
-
-        
 
         if not self.world.ske.is_dead:
             self.world.update(delta)
             self.SKE.update()
             self.barrier.update()
-
-            # self.map.update_animation()
-
-            # self.world.ground = check_platform(self.SKE, self.map, self.world.ground) + 35
-    
     
     def on_draw(self):
         arcade.start_render()
@@ -115,28 +105,14 @@ class SKE(arcade.Sprite):
 
         self.change_angle = 1
 
-    
     def update(self):
         self.center_x = self.model.x
         self.center_y = self.model.y
-
-        # if not self.model.key and self.center_y > GROUND:
-        #     self.center_y -= GRAVITY
-
-        # if self.model.y == GROUND and self.angle == 0.0:
-        #     pass
-
-        # elif self.model.y == GROUND and self.angle != 0.0:
-        #     self.angle += self.change_angle
-
-        # else:
-        #     self.angle -= self.change_angle
-
         
 
 class BarrierSprite(arcade.Sprite):
     def __init__(self, model, file_name):
-        super().__init__(filename=file_name, scale=0.5)
+        super().__init__(filename=file_name, scale=0.3)
 
         self.model = model
         self.center_x = self.model.x
@@ -209,8 +185,6 @@ class Map(arcade.SpriteList):
                                     35 + j * 70,
                                     35 + i * 70))
 
-    # def update(self):
-    #     self.generate_map()
 
 def main():
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
