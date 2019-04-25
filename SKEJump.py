@@ -1,4 +1,5 @@
 import arcade
+from random import randint
 from models import World, FPSCounter
 
 SCREEN_WIDTH = 800
@@ -25,7 +26,7 @@ class GameWindow(arcade.Window):
 
         self.map = Map()
 
-        self.barrier = BarrierSprite(self.world.barrier, 'images/treePineFrozen.png')
+        self.tree = TreeSprite('images/treePineFrozen.png')
 
         self.platform = arcade.PhysicsEnginePlatformer(self.SKE, self.map)
 
@@ -39,7 +40,7 @@ class GameWindow(arcade.Window):
                             0, SCREEN_HEIGHT)
 
     def hits(self):
-        if arcade.check_for_collision(self.SKE, self.barrier):
+        if arcade.check_for_collision(self.SKE, self.tree):
             self.world.ske.is_dead = True
 
     def update(self, delta):
@@ -49,7 +50,7 @@ class GameWindow(arcade.Window):
         if not self.world.ske.is_dead:
             self.world.update(delta)
             self.SKE.update()
-            self.barrier.update()
+            self.tree.update()
             self.platform.update()
             self.map.update_animation()
     
@@ -60,7 +61,7 @@ class GameWindow(arcade.Window):
 
         self.SKE.draw()
 
-        self.barrier.draw()
+        self.tree.draw()
 
         self.map.draw()
 
@@ -98,17 +99,21 @@ class SKE(arcade.Sprite):
         self.center_y = self.model.y
         
 
-class BarrierSprite(arcade.Sprite):
-    def __init__(self, model, file_name):
+class TreeSprite(arcade.Sprite):
+    def __init__(self, file_name):
         super().__init__(filename=file_name, scale=0.3)
 
-        self.model = model
-        self.center_x = self.model.x
-        self.center_y = self.model.y
+        self.center_x = 600
+        self.center_y = GROUND
     
     def update(self):
-        self.center_x = self.model.x
-        self.center_y = self.model.y
+        self.center_x -= MOVEMENT_SPEED
+
+        if self.center_x < -30:
+            self.center_x = randint(SCREEN_WIDTH + 20, 
+                                    SCREEN_WIDTH + 100)
+            
+            self.center_y = GROUND
 
 
 class Block(arcade.Sprite):

@@ -70,7 +70,7 @@ class World:
         self.width = width
         self.height = height
 
-        self.barrier = Barrier(self, 600, GROUND+20)
+        # self.barrier = Barrier(self, 600, GROUND+20)
 
         self.ske = SKEman(self, 200, GROUND)
 
@@ -85,7 +85,7 @@ class World:
     def update(self, delta):
         self.ske.update(delta)
 
-        self.barrier.update()
+        # self.barrier.update()
 
         self.add_score()
 
@@ -94,20 +94,20 @@ class World:
             self.ske.check_key(KEY_MAP[key])
 
 
-class Barrier:
-    def __init__(self, world, x, y):
-        self.x = x
-        self.y = y
-        self.world = world
+# class Barrier:
+#     def __init__(self, world, x, y):
+#         self.x = x
+#         self.y = y
+#         self.world = world
 
-    def update(self):
-        self.x -= MOVEMENT_SPEED
+#     def update(self):
+#         self.x -= MOVEMENT_SPEED
 
-        if self.x <= 0:
-            from random import randint
-            from SKEJump import SCREEN_WIDTH
-            self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
-                             self.world.ske.x + SCREEN_WIDTH + 100)
+#         if self.x <= 0:
+#             from random import randint
+#             from SKEJump import SCREEN_WIDTH
+#             self.x = randint(self.world.ske.x + SCREEN_WIDTH + 30,
+#                              self.world.ske.x + SCREEN_WIDTH + 100)
 
 
 class FPSCounter:
