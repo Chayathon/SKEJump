@@ -1,11 +1,10 @@
 import arcade
 from random import randint
-from models import World, FPSCounter
+from models import FPSCounter
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-GRAVITY = 10
 GROUND = 175
 MOVEMENT_SPEED = 10
 
@@ -20,36 +19,29 @@ class GameWindow(arcade.Window):
                                 center_x=SCREEN_WIDTH//2,
                                 center_y=SCREEN_HEIGHT//2)
 
-        self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
+        # self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-        self.SKE = SKE(self.world.ske, 'images/SKE_N.png')
+        self.player = Player('images/SKE_N.png')
 
         self.map = Map()
 
         self.tree = TreeSprite('images/treePineFrozen.png')
 
-        self.platform = arcade.PhysicsEnginePlatformer(self.SKE, self.map)
+        self.platform = arcade.PhysicsEnginePlatformer(self.player, 
+                                                       self.map)
 
         self.fps = FPSCounter()
 
-        self.position = []
-        
-    def change_view(self):
-        arcade.set_viewport(self.SKE.center_x - 200,
-                            self.SKE.center_x - 200 + SCREEN_WIDTH,
-                            0, SCREEN_HEIGHT)
-
     def hits(self):
-        if arcade.check_for_collision(self.SKE, self.tree):
-            self.world.ske.is_dead = True
+        if arcade.check_for_collision(self.player, self.tree):
+            self.player.is_dead = True
 
     def update(self, delta):
         self.BG.draw()
         self.hits()
 
-        if not self.world.ske.is_dead:
-            self.world.update(delta)
-            self.SKE.update()
+        if not self.player.is_dead:
+            self.player.update()
             self.tree.update()
             self.platform.update()
             self.map.update_animation()
@@ -59,15 +51,15 @@ class GameWindow(arcade.Window):
 
         self.BG.draw()
 
-        self.SKE.draw()
+        self.player.draw()
 
         self.tree.draw()
 
         self.map.draw()
 
-        arcade.draw_text(str(self.world.score),
-                            self.width//2, self.height - 40,
-                            arcade.color.WHITE, 30)
+        # arcade.draw_text(str(self.world.score),
+        #                     self.width//2, self.height - 40,
+        #                     arcade.color.WHITE, 30)
 
         self.fps.tick()
 
@@ -76,11 +68,12 @@ class GameWindow(arcade.Window):
                         arcade.color.RED, 10)
 
     def on_key_press(self, key, key_modifiers):
-        self.world.on_key_press(key, key_modifiers)
+        # self.world.on_key_press(key, key_modifiers)
+        pass
 
 
-class SKE(arcade.Sprite):
-    def __init__(self, model, file_name):
+class Player(arcade.Sprite):
+    def __init__(self, file_name):
         super().__init__(filename=file_name)
 
         # Create SKE normal state at textures index 0
@@ -88,15 +81,16 @@ class SKE(arcade.Sprite):
         self.textures.append(self.ske_n)
 
         self.status = 0
-        self.model = model
-        self.center_x = self.model.x
-        self.center_y = self.model.y
+        self.center_x = 100
+        self.center_y = GROUND
 
         self.change_angle = 1
 
+        self.is_dead = False
+
     def update(self):
-        self.center_x = self.model.x
-        self.center_y = self.model.y
+        self.center_x += 0
+        self.center_y += 0
         
 
 class TreeSprite(arcade.Sprite):
@@ -123,7 +117,6 @@ class Block(arcade.Sprite):
                          center_y=model_y)
 
     def update_animation(self):
-        from models import MOVEMENT_SPEED
         self.center_x -= MOVEMENT_SPEED
 
         if self.center_x < (-70):
