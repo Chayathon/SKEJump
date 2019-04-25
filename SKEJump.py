@@ -6,6 +6,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 GROUND = 175
+JUMP_SPEED = 10
 MOVEMENT_SPEED = 10
 
 map = list(reversed(open('map_0.txt').read().splitlines()))
@@ -18,8 +19,6 @@ class GameWindow(arcade.Window):
         self.BG = arcade.Sprite(filename='images/backgroundForest.png',
                                 center_x=SCREEN_WIDTH//2,
                                 center_y=SCREEN_HEIGHT//2)
-
-        # self.world = World(SCREEN_WIDTH, SCREEN_HEIGHT)
 
         self.player = Player('images/SKE_N.png')
 
@@ -68,13 +67,14 @@ class GameWindow(arcade.Window):
                         arcade.color.RED, 10)
 
     def on_key_press(self, key, key_modifiers):
-        # self.world.on_key_press(key, key_modifiers)
-        pass
+        if key == arcade.key.SPACE:
+            if self.platform.can_jump():
+                self.player.change_y = JUMP_SPEED
 
 
 class Player(arcade.Sprite):
     def __init__(self, file_name):
-        super().__init__(filename=file_name)
+        super().__init__(filename=file_name, scale=0.5)
 
         # Create SKE normal state at textures index 0
         self.ske_n = arcade.load_texture(file_name)
@@ -121,7 +121,7 @@ class Block(arcade.Sprite):
 
         if self.center_x < (-70):
             # self.kill()
-            self.center_x = 1230
+            self.center_x = 1250
 
 
 class Map(arcade.SpriteList):
