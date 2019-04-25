@@ -9,7 +9,7 @@ GROUND = 175
 JUMP_SPEED = 10
 MOVEMENT_SPEED = 10
 
-map = list(reversed(open('map_0.txt').read().splitlines()))
+map = list(reversed(open('map_1.txt').read().splitlines()))
 
 
 class GameWindow(arcade.Window):
@@ -40,9 +40,9 @@ class GameWindow(arcade.Window):
     def update(self, delta):
         self.BG.draw()
         self.hits()
+        self.player.update()
 
         if not self.player.is_dead:
-            self.player.update()
             self.tree.update()
             self.platform.update()
             self.map.update_animation()
@@ -91,8 +91,11 @@ class Player(arcade.Sprite):
         self.is_dead = False
 
     def update(self):
-        self.center_x += 0
-        self.center_y += 0
+        self.fall()
+    
+    def fall(self):
+        if self.center_y < 30:
+            self.is_dead = True
         
 
 class TreeSprite(arcade.Sprite):
@@ -116,14 +119,14 @@ class Block(arcade.Sprite):
     def __init__(self, file_name, model_x, model_y):
         super().__init__(filename=file_name,
                          center_x=model_x, 
-                         center_y=model_y)
+                         center_y=model_y,
+                         scale=0.5)
 
     def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
 
-        if self.center_x < (-70):
-            # self.kill()
-            self.center_x = 1250
+        if self.center_x < (-35):
+            self.kill()
 
 
 class Map(arcade.SpriteList):
@@ -136,43 +139,43 @@ class Map(arcade.SpriteList):
             for j in range(len(map[i])):
                 if map[i][j] == 'P':
                     self.append(Block('images/slice01.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
                 elif map[i][j] == '0':
                     self.append(Block('images/slice33.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
                 elif map[i][j] == 'U':
                     self.append(Block('images/slice07.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
                 elif map[i][j] == 'D':
                     self.append(Block('images/slice06.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
                 
                 elif map[i][j] == 'u':
                     self.append(Block('images/slice18.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
                 elif map[i][j] == 'd':
                     self.append(Block('images/slice17.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
                 
                 elif map[i][j] == 'T':
                     self.append(Block('images/slice21.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
                 elif map[i][j] == 'B':
                     self.append(Block('images/slice22.png', 
-                                    35 + j * 70,
-                                    35 + i * 70))
+                                    17.5 + j * 35,
+                                    17.5 + i * 35))
 
 
 def main():
