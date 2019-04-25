@@ -1,29 +1,14 @@
 import arcade
-import time, collections
-from models import World, check_platform
+from models import World, FPSCounter
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-map = list(reversed(open('map_0.txt').read().splitlines()))
+GRAVITY = 10
+GROUND = 175
+MOVEMENT_SPEED = 10
 
-class FPSCounter:
-    def __init__(self):
-        self.time = time.perf_counter()
-        self.frame_times = collections.deque(maxlen=60)
-
-    def tick(self):
-        t1 = time.perf_counter()
-        dt = t1 - self.time
-        self.time = t1
-        self.frame_times.append(dt)
-
-    def get_fps(self):
-        total_time = sum(self.frame_times)
-        if total_time == 0:
-            return 0
-        else:
-            return len(self.frame_times) / sum(self.frame_times)
+map = list(reversed(open('map_1.txt').read().splitlines()))
 
 
 class GameWindow(arcade.Window):
@@ -42,6 +27,7 @@ class GameWindow(arcade.Window):
 
         self.barrier = BarrierSprite(self.world.barrier, 'images/treePineFrozen.png')
 
+        self.platform = arcade.PhysicsEnginePlatformer(self.SKE, self.map)
 
         self.fps = FPSCounter()
 
@@ -64,6 +50,7 @@ class GameWindow(arcade.Window):
             self.world.update(delta)
             self.SKE.update()
             self.barrier.update()
+            self.platform.update()
     
     def on_draw(self):
         arcade.start_render()
