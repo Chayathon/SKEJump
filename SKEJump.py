@@ -120,7 +120,7 @@ class Block(arcade.Sprite):
         super().__init__(filename=file_name,
                          center_x=model_x, 
                          center_y=model_y,
-                         scale=0.5)
+                         scale=0.4)
 
     def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
@@ -139,43 +139,43 @@ class Map(arcade.SpriteList):
             for j in range(len(map[i])):
                 if map[i][j] == 'P':
                     self.append(Block('images/slice01.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
                 elif map[i][j] == '0':
                     self.append(Block('images/slice33.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
                 elif map[i][j] == 'U':
                     self.append(Block('images/slice07.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
                 elif map[i][j] == 'D':
                     self.append(Block('images/slice06.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
                 
                 elif map[i][j] == 'u':
                     self.append(Block('images/slice18.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
                 elif map[i][j] == 'd':
                     self.append(Block('images/slice17.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
                 
                 elif map[i][j] == 'T':
                     self.append(Block('images/slice21.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
                 elif map[i][j] == 'B':
                     self.append(Block('images/slice22.png', 
-                                    17.5 + j * 35,
-                                    17.5 + i * 35))
+                                    14 + j * 28,
+                                    14 + i * 28))
 
 
 def main():
