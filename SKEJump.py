@@ -8,7 +8,7 @@ GRAVITY = 10
 GROUND = 175
 MOVEMENT_SPEED = 10
 
-map = list(reversed(open('map_1.txt').read().splitlines()))
+map = list(reversed(open('map_0.txt').read().splitlines()))
 
 
 class GameWindow(arcade.Window):
@@ -51,6 +51,7 @@ class GameWindow(arcade.Window):
             self.SKE.update()
             self.barrier.update()
             self.platform.update()
+            self.map.update_animation()
     
     def on_draw(self):
         arcade.start_render()
@@ -120,8 +121,9 @@ class Block(arcade.Sprite):
         from models import MOVEMENT_SPEED
         self.center_x -= MOVEMENT_SPEED
 
-        if self.center_x < (-100):
-            self.kill()
+        if self.center_x < (-70):
+            # self.kill()
+            self.center_x = 1230
 
 
 class Map(arcade.SpriteList):
