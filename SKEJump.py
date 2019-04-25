@@ -29,6 +29,8 @@ class GameWindow(arcade.Window):
         self.platform = arcade.PhysicsEnginePlatformer(self.player, 
                                                        self.map)
 
+        self.score = 0
+
         self.fps = FPSCounter()
 
     def hits(self):
@@ -56,9 +58,9 @@ class GameWindow(arcade.Window):
 
         self.map.draw()
 
-        # arcade.draw_text(str(self.world.score),
-        #                     self.width//2, self.height - 40,
-        #                     arcade.color.WHITE, 30)
+        arcade.draw_text(str(self.score),
+                            self.width//2, self.height - 40,
+                            arcade.color.WHITE, 30)
 
         self.fps.tick()
 
