@@ -20,3 +20,8 @@ class FPSCounter:
             return 0
         else:
             return len(self.frame_times) / sum(self.frame_times)
+
+
+def rand_map(lst):
+    index = randint(0, len(lst)-1)
+    return lst[index]
