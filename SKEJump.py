@@ -9,7 +9,9 @@ GROUND = 175
 JUMP_SPEED = 10
 MOVEMENT_SPEED = 10
 
-map = list(reversed(open('map_1.txt').read().splitlines()))
+map1 = list(reversed(open('map_0.txt').read().splitlines()))
+map2 = list(reversed(open('map_1.txt').read().splitlines()))
+platform = list(map(lambda x,y: x+y ,map1, map2))
 
 
 class GameWindow(arcade.Window):
@@ -135,44 +137,44 @@ class Map(arcade.SpriteList):
         self.generate_map()
 
     def generate_map(self):
-        for i in range(len(map)):
-            for j in range(len(map[i])):
-                if map[i][j] == 'P':
+        for i in range(len(platform)):
+            for j in range(len(platform[i])):
+                if platform[i][j] == 'P':
                     self.append(Block('images/slice01.png', 
                                     14 + j * 28,
                                     14 + i * 28))
 
-                elif map[i][j] == '0':
+                elif platform[i][j] == '0':
                     self.append(Block('images/slice33.png', 
                                     14 + j * 28,
                                     14 + i * 28))
 
-                elif map[i][j] == 'U':
+                elif platform[i][j] == 'U':
                     self.append(Block('images/slice07.png', 
                                     14 + j * 28,
                                     14 + i * 28))
 
-                elif map[i][j] == 'D':
+                elif platform[i][j] == 'D':
                     self.append(Block('images/slice06.png', 
                                     14 + j * 28,
                                     14 + i * 28))
                 
-                elif map[i][j] == 'u':
+                elif platform[i][j] == 'u':
                     self.append(Block('images/slice18.png', 
                                     14 + j * 28,
                                     14 + i * 28))
 
-                elif map[i][j] == 'd':
+                elif platform[i][j] == 'd':
                     self.append(Block('images/slice17.png', 
                                     14 + j * 28,
                                     14 + i * 28))
                 
-                elif map[i][j] == 'T':
+                elif platform[i][j] == 'T':
                     self.append(Block('images/slice21.png', 
                                     14 + j * 28,
                                     14 + i * 28))
 
-                elif map[i][j] == 'B':
+                elif platform[i][j] == 'B':
                     self.append(Block('images/slice22.png', 
                                     14 + j * 28,
                                     14 + i * 28))
