@@ -107,13 +107,16 @@ class Player(arcade.Sprite):
 
 
 class TreeSprite(arcade.Sprite):
+    NUM = 0
     def __init__(self, file_name, model_x=600,
                  model_y=GROUND, end_map=False):
         super().__init__(filename=file_name, scale=0.3,
                          center_x=model_x, center_y=model_y)
 
         self.end_map = end_map
-        self.is_tree = True
+        self.is_tree = has_tree()
+        TreeSprite.NUM += 1
+        self.num = TreeSprite.NUM
 
     # def update(self):
     #     self.center_x -= MOVEMENT_SPEED
@@ -126,6 +129,10 @@ class TreeSprite(arcade.Sprite):
 
     def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
+        print(self.is_tree, ' ', self.num)
+
+        if not self.is_tree:
+            self.kill()
 
         if self.center_x < (-790):
             self.kill()
@@ -210,10 +217,9 @@ class Map(arcade.SpriteList):
                                       10 + i * 20))
 
                 elif platform[i][j] == '3':
-                    if has_tree():
-                        self.append(TreeSprite('images/treePineFrozen.png',
-                                            10 + j * 20,
-                                            10 + i * 20))
+                    self.append(TreeSprite('images/treePineFrozen.png',
+                                        10 + j * 20,
+                                        10 + i * 20))
 
     def new_map(self):
         platform = rand_map(list_map)
@@ -266,10 +272,9 @@ class Map(arcade.SpriteList):
                                       10 + i * 20))
 
                 elif platform[i][j] == '3':
-                    if has_tree():
-                        self.append(TreeSprite('images/treePineFrozen.png',
-                                            10 + j * 20,
-                                            10 + i * 20))
+                    self.append(TreeSprite('images/treePineFrozen.png',
+                                        10 + j * 20,
+                                        10 + i * 20))
 
 
 def main():
