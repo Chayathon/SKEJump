@@ -12,9 +12,10 @@ MOVEMENT_SPEED = 10
 
 map1 = list(reversed(open('map_0.txt').read().splitlines()))
 map2 = list(reversed(open('map_1.txt').read().splitlines()))
+map3 = list(reversed(open('map_2.txt').read().splitlines()))
 platform = list(map(lambda x, y: x+y, map1, map2))
 
-list_map = [map1, map2]
+list_map = [map1, map2, map3]
 
 
 class GameWindow(arcade.Window):
@@ -216,6 +217,26 @@ class Map(arcade.SpriteList):
                                       10 + j * 20,
                                       10 + i * 20))
 
+                elif platform[i][j] == 'L':
+                    self.append(Block('images/slice23.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'l':
+                    self.append(Block('images/slice19.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'R':
+                    self.append(Block('images/slice24.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'r':
+                    self.append(Block('images/slice20.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+
                 elif platform[i][j] == '3':
                     self.append(TreeSprite('images/treePineFrozen.png',
                                         10 + j * 20,
@@ -270,10 +291,30 @@ class Map(arcade.SpriteList):
                     self.append(Block('images/slice22.png',
                                       790 + j * 20,
                                       10 + i * 20))
+                
+                elif platform[i][j] == 'L':
+                    self.append(Block('images/slice23.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'l':
+                    self.append(Block('images/slice19.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'R':
+                    self.append(Block('images/slice24.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
+                
+                elif platform[i][j] == 'r':
+                    self.append(Block('images/slice20.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == '3':
                     self.append(TreeSprite('images/treePineFrozen.png',
-                                        10 + j * 20,
+                                        790 + j * 20,
                                         10 + i * 20))
 
 
