@@ -1,5 +1,6 @@
 
-import time, collections
+import time
+import collections
 from random import randint
 
 
@@ -25,3 +26,10 @@ class FPSCounter:
 def rand_map(lst):
     index = randint(0, len(lst)-1)
     return lst[index]
+
+
+def has_tree():
+    tree = randint(0, 3)
+    if tree == 1:
+        return True
+    return False

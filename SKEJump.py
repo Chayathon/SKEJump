@@ -1,6 +1,7 @@
-import arcade, time
+import time
+import arcade
 from random import randint
-from models import FPSCounter, rand_map
+from models import FPSCounter, rand_map, has_tree
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -11,7 +12,7 @@ MOVEMENT_SPEED = 10
 
 map1 = list(reversed(open('map_0.txt').read().splitlines()))
 map2 = list(reversed(open('map_1.txt').read().splitlines()))
-platform = list(map(lambda x,y: x+y ,map1, map2))
+platform = list(map(lambda x, y: x+y, map1, map2))
 
 list_map = [map1, map2]
 
@@ -28,18 +29,20 @@ class GameWindow(arcade.Window):
 
         self.map = Map()
 
-        self.tree = TreeSprite('images/treePineFrozen.png')
+        # self.tree = TreeSprite('images/treePineFrozen.png')
 
-        self.physics = arcade.PhysicsEnginePlatformer(self.player, 
-                                                       self.map)
+        self.physics = arcade.PhysicsEnginePlatformer(self.player,
+                                                      self.map)
 
         self.score = 0
 
         self.fps = FPSCounter()
 
     def hits(self):
-        if arcade.check_for_collision(self.player, self.tree):
-            self.player.is_dead = True
+        for block in self.map:
+            if block.is_tree:
+                if arcade.check_for_collision(self.player, block):
+                    self.player.is_dead = True
 
     def update(self, delta):
         self.hits()
@@ -47,12 +50,11 @@ class GameWindow(arcade.Window):
 
         if not self.player.is_dead:
             self.score += 1
-            self.tree.update()
+            # self.tree.update()
             self.physics.update()
             self.map.update_animation()
             self.map.check_end_map()
-            
-    
+
     def on_draw(self):
         arcade.start_render()
 
@@ -60,19 +62,19 @@ class GameWindow(arcade.Window):
 
         self.player.draw()
 
-        self.tree.draw()
+        # self.tree.draw()
 
         self.map.draw()
 
         arcade.draw_text(str(self.score),
-                            self.width//2, self.height - 40,
-                            arcade.color.WHITE, 30)
+                         self.width//2, self.height - 40,
+                         arcade.color.WHITE, 30)
 
         self.fps.tick()
 
         arcade.draw_text(f'fps {self.fps.get_fps():.0f} ms',
-                        SCREEN_WIDTH - 70, SCREEN_HEIGHT - 20,
-                        arcade.color.RED, 10)
+                         SCREEN_WIDTH - 70, SCREEN_HEIGHT - 20,
+                         arcade.color.RED, 10)
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
@@ -98,36 +100,45 @@ class Player(arcade.Sprite):
 
     def update(self):
         self.fall()
-    
+
     def fall(self):
         if self.center_y < 30:
             self.is_dead = True
-        
+
 
 class TreeSprite(arcade.Sprite):
-    def __init__(self, file_name):
-        super().__init__(filename=file_name, scale=0.3)
+    def __init__(self, file_name, model_x=600,
+                 model_y=GROUND, end_map=False):
+        super().__init__(filename=file_name, scale=0.3,
+                         center_x=model_x, center_y=model_y)
 
-        self.center_x = 600
-        self.center_y = GROUND
-    
-    def update(self):
+        self.end_map = end_map
+        self.is_tree = True
+
+    # def update(self):
+    #     self.center_x -= MOVEMENT_SPEED
+
+    #     if self.center_x < -30:
+    #         self.center_x = randint(SCREEN_WIDTH + 20,
+    #                                 SCREEN_WIDTH + 100)
+
+    #         self.center_y = GROUND
+
+    def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
 
-        if self.center_x < -30:
-            self.center_x = randint(SCREEN_WIDTH + 20, 
-                                    SCREEN_WIDTH + 100)
-            
-            self.center_y = GROUND
+        if self.center_x < (-790):
+            self.kill()
 
 
 class Block(arcade.Sprite):
     def __init__(self, file_name, model_x, model_y, end_map=False):
         super().__init__(filename=file_name,
-                         center_x=model_x, 
+                         center_x=model_x,
                          center_y=model_y,
                          scale=2.0/7.0)
         self.end_map = end_map
+        self.is_tree = False
 
     def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
@@ -153,107 +164,119 @@ class Map(arcade.SpriteList):
         for i in range(len(platform)):
             for j in range(len(platform[i])):
                 if platform[i][j] == 'P':
-                    self.append(Block('images/slice01.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice01.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'N':
-                    self.append(Block('images/slice01.png', 
-                                    10 + j * 20,
-                                    10 + i * 20,
-                                    True))
+                    self.append(Block('images/slice01.png',
+                                      10 + j * 20,
+                                      10 + i * 20,
+                                      True))
 
                 elif platform[i][j] == '0':
-                    self.append(Block('images/slice33.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice33.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'U':
-                    self.append(Block('images/slice07.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice07.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'D':
-                    self.append(Block('images/slice06.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
-                
+                    self.append(Block('images/slice06.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+
                 elif platform[i][j] == 'u':
-                    self.append(Block('images/slice18.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice18.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'd':
-                    self.append(Block('images/slice17.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
-                
+                    self.append(Block('images/slice17.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+
                 elif platform[i][j] == 'T':
-                    self.append(Block('images/slice21.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice21.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'B':
-                    self.append(Block('images/slice22.png', 
-                                    10 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice22.png',
+                                      10 + j * 20,
+                                      10 + i * 20))
+
+                elif platform[i][j] == '3':
+                    if has_tree():
+                        self.append(TreeSprite('images/treePineFrozen.png',
+                                            10 + j * 20,
+                                            10 + i * 20))
 
     def new_map(self):
         platform = rand_map(list_map)
         for i in range(len(platform)):
             for j in range(len(platform[i])):
                 if platform[i][j] == 'P':
-                    self.append(Block('images/slice01.png', 
-                                    790 + j * 20,
-                                    10 + i * 20,))
+                    self.append(Block('images/slice01.png',
+                                      790 + j * 20,
+                                      10 + i * 20,))
 
                 elif platform[i][j] == 'N':
-                    self.append(Block('images/slice01.png', 
-                                    790 + j * 20,
-                                    10 + i * 20,
-                                    True))
+                    self.append(Block('images/slice01.png',
+                                      790 + j * 20,
+                                      10 + i * 20,
+                                      True))
 
                 elif platform[i][j] == '0':
-                    self.append(Block('images/slice33.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice33.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'U':
-                    self.append(Block('images/slice07.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice07.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'D':
-                    self.append(Block('images/slice06.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
-                
+                    self.append(Block('images/slice06.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
+
                 elif platform[i][j] == 'u':
-                    self.append(Block('images/slice18.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice18.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'd':
-                    self.append(Block('images/slice17.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
-                
+                    self.append(Block('images/slice17.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
+
                 elif platform[i][j] == 'T':
-                    self.append(Block('images/slice21.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice21.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
                 elif platform[i][j] == 'B':
-                    self.append(Block('images/slice22.png', 
-                                    790 + j * 20,
-                                    10 + i * 20))
+                    self.append(Block('images/slice22.png',
+                                      790 + j * 20,
+                                      10 + i * 20))
 
+                elif platform[i][j] == '3':
+                    if has_tree():
+                        self.append(TreeSprite('images/treePineFrozen.png',
+                                            10 + j * 20,
+                                            10 + i * 20))
 
 
 def main():
     window = GameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.set_window(window)
     arcade.run()
+
 
 if __name__ == '__main__':
     main()
