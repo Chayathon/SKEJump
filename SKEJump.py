@@ -14,9 +14,10 @@ MOVEMENT_SPEED = 10
 map1 = list(reversed(open('map_0.txt').read().splitlines()))
 map2 = list(reversed(open('map_1.txt').read().splitlines()))
 map3 = list(reversed(open('map_2.txt').read().splitlines()))
+map4 = list(reversed(open('map_3.txt').read().splitlines()))
 platform = list(map(lambda x, y: x+y, map1, map2))
 
-list_map = [map1, map2, map3]
+list_map = [map1, map2, map3, map4]
 
 
 class GameWindow(arcade.Window):
@@ -40,19 +41,7 @@ class GameWindow(arcade.Window):
 
         self.fps = FPSCounter()
 
-    # def hits(self):
-    #     for block in self.map:
-    #         if block.is_tree:
-    #             if physics.check_for_collision(self.player, block):
-    #                 self.player.is_dead = True
-
     def change_game_state(self, key=None):
-        if self.game_state == 'freeze':
-
-            if key == arcade.key.SPACE:
-                self.game_state = 'running'
-
-
         if self.player.is_dead:
             self.game_state = 'dead'
 
@@ -72,6 +61,10 @@ class GameWindow(arcade.Window):
 
                 self.game_state = 'freeze'
         
+        if self.game_state == 'freeze':
+            if key == arcade.key.SPACE:
+                self.game_state = 'running'
+                
 
     def update(self, delta):
         self.physics.tree_hit()
