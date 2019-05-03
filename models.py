@@ -29,7 +29,7 @@ def rand_map(lst):
 
 
 def has_tree():
-    tree = randint(0, 3)
+    tree = randint(0, 2)
     if tree == 1:
         return True
     return False
