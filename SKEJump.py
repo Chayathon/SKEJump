@@ -1,12 +1,13 @@
 import time
 import arcade
+import physics
 from random import randint
 from models import FPSCounter, rand_map, has_tree
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-GROUND = 80
+GROUND = 60
 JUMP_SPEED = 10
 MOVEMENT_SPEED = 10
 
@@ -30,40 +31,68 @@ class GameWindow(arcade.Window):
 
         self.map = Map()
 
-        # self.tree = TreeSprite('images/treePineFrozen.png')
-
-        self.physics = arcade.PhysicsEnginePlatformer(self.player,
-                                                      self.map)
+        self.physics = physics.PhysicsEnginePlatformer(self.player,
+                                                       self.map)
 
         self.score = 0
 
+        self.game_state = 'freeze'
+
         self.fps = FPSCounter()
 
-    def hits(self):
-        for block in self.map:
-            if block.is_tree:
-                if arcade.check_for_collision(self.player, block):
-                    self.player.is_dead = True
+    # def hits(self):
+    #     for block in self.map:
+    #         if block.is_tree:
+    #             if physics.check_for_collision(self.player, block):
+    #                 self.player.is_dead = True
+
+    def change_game_state(self, key=None):
+        if self.game_state == 'freeze':
+
+            if key == arcade.key.SPACE:
+                self.game_state = 'running'
+
+
+        if self.player.is_dead:
+            self.game_state = 'dead'
+
+            if key == arcade.key.SPACE:
+                self.score = 0
+
+                self.player.center_x = 100
+                self.player.center_y = GROUND
+
+                self.player.is_dead = False
+
+                global platform
+                platform = list(map(lambda x, y: x+y, map1, map2))
+
+                self.map.sprite_list = []
+                self.map.generate_map()
+
+                self.game_state = 'freeze'
+        
 
     def update(self, delta):
-        self.hits()
+        self.physics.tree_hit()
         self.player.update()
+        self.change_game_state()
 
-        if not self.player.is_dead:
+        if not self.player.is_dead and self.game_state == 'running':
             self.score += 1
-            # self.tree.update()
             self.physics.update()
             self.map.update_animation()
             self.map.check_end_map()
+        
 
     def on_draw(self):
         arcade.start_render()
 
+        self.change_game_state()
+
         self.BG.draw()
 
         self.player.draw()
-
-        # self.tree.draw()
 
         self.map.draw()
 
@@ -79,8 +108,10 @@ class GameWindow(arcade.Window):
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.SPACE:
+            self.change_game_state(key)
             if self.physics.can_jump():
                 self.player.change_y = JUMP_SPEED
+
 
 
 class Player(arcade.Sprite):
@@ -91,11 +122,8 @@ class Player(arcade.Sprite):
         self.ske_n = arcade.load_texture(file_name)
         self.textures.append(self.ske_n)
 
-        self.status = 0
         self.center_x = 100
         self.center_y = GROUND
-
-        self.change_angle = 1
 
         self.is_dead = False
 
@@ -111,29 +139,16 @@ class TreeSprite(arcade.Sprite):
     NUM = 0
     def __init__(self, file_name, model_x=600,
                  model_y=GROUND, end_map=False):
-        super().__init__(filename=file_name, scale=0.3,
+        super().__init__(filename=file_name, scale=0.25,
                          center_x=model_x, center_y=model_y)
 
         self.end_map = end_map
-        self.is_tree = has_tree()
+        self.is_tree = True
         TreeSprite.NUM += 1
         self.num = TreeSprite.NUM
 
-    # def update(self):
-    #     self.center_x -= MOVEMENT_SPEED
-
-    #     if self.center_x < -30:
-    #         self.center_x = randint(SCREEN_WIDTH + 20,
-    #                                 SCREEN_WIDTH + 100)
-
-    #         self.center_y = GROUND
-
     def update_animation(self):
         self.center_x -= MOVEMENT_SPEED
-        print(self.is_tree, ' ', self.num)
-
-        if not self.is_tree:
-            self.kill()
 
         if self.center_x < (-790):
             self.kill()
@@ -159,8 +174,6 @@ class Map(arcade.SpriteList):
     def __init__(self):
         super().__init__()
         self.generate_map()
-
-        self.count_block = 0
 
     def check_end_map(self):
         for block in self.sprite_list:
@@ -238,9 +251,10 @@ class Map(arcade.SpriteList):
                                       10 + i * 20))
 
                 elif platform[i][j] == '3':
-                    self.append(TreeSprite('images/treePineFrozen.png',
-                                        10 + j * 20,
-                                        10 + i * 20))
+                    if has_tree():
+                        self.append(TreeSprite('images/treePineFrozen.png',
+                                            10 + j * 20,
+                                            10 + i * 20))
 
     def new_map(self):
         platform = rand_map(list_map)
@@ -313,9 +327,10 @@ class Map(arcade.SpriteList):
                                       10 + i * 20))
 
                 elif platform[i][j] == '3':
-                    self.append(TreeSprite('images/treePineFrozen.png',
-                                        790 + j * 20,
-                                        10 + i * 20))
+                    if has_tree():
+                        self.append(TreeSprite('images/treePineFrozen.png',
+                                            790 + j * 20,
+                                            10 + i * 20))
 
 
 def main():
