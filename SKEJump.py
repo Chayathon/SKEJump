@@ -11,11 +11,12 @@ GROUND = 60
 JUMP_SPEED = 10
 MOVEMENT_SPEED = 10
 
+maps = list(reversed(open('map_s.txt').read().splitlines()))
 map1 = list(reversed(open('map_0.txt').read().splitlines()))
 map2 = list(reversed(open('map_1.txt').read().splitlines()))
 map3 = list(reversed(open('map_2.txt').read().splitlines()))
 map4 = list(reversed(open('map_3.txt').read().splitlines()))
-platform = list(map(lambda x, y: x+y, map1, map2))
+platform = list(map(lambda x, y: x+y, maps, map2))
 
 list_map = [map1, map2, map3, map4]
 
@@ -62,7 +63,7 @@ class GameWindow(arcade.Window):
                 self.player.is_dead = False
 
                 global platform
-                platform = list(map(lambda x, y: x+y, map1, map2))
+                platform = list(map(lambda x, y: x+y, maps, map2))
 
                 self.map.sprite_list = []
                 self.map.generate_map()
@@ -79,16 +80,10 @@ class GameWindow(arcade.Window):
     def dead_draw(self):
         if self.game_state == 'dead':
 
-            arcade.draw_text(f'Your score : {self.score}',
-                         self.width//2 - 180, self.height//2 + 50,
-                         arcade.color.BLACK, 40)
+            high_score = open('score.txt').read()
 
-            arcade.draw_text(f'Press "R" to restart',
-                         self.width//2 - 200, self.height//2,
-                         arcade.color.BLACK, 40)
-            
-            arcade.draw_text(f'Press "ESC" to exit',
-                         self.width//2 - 200, self.height//2 - 50,
+            arcade.draw_text(f'Your score : {self.score}\nHigh score : {int(high_score)}\nPress "R" to restart\nPress "ESC" to exit',
+                         self.width//2 - 180, self.height//2 - 80,
                          arcade.color.BLACK, 40)
 
 
