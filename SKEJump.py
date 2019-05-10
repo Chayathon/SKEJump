@@ -40,6 +40,8 @@ class GameWindow(arcade.Window):
 
         self.write_score = False
 
+        self.starter = False
+
         self.game_state = 'freeze'
 
         self.fps = FPSCounter()
@@ -86,6 +88,11 @@ class GameWindow(arcade.Window):
                          self.width//2 - 180, self.height//2 - 80,
                          arcade.color.BLACK, 40)
 
+    def draw_start(self):
+        if self.game_state == 'freeze':
+            arcade.draw_text(f' Press "Space bar"\n to start and Jump',
+                         self.width//2 - 200, self.height//2,
+                         arcade.color.BLACK, 40)
 
     def update(self, delta):
         self.physics.tree_hit()
@@ -121,6 +128,8 @@ class GameWindow(arcade.Window):
                          arcade.color.RED, 10)
         
         self.dead_draw()
+
+        self.draw_start()
 
     def on_key_press(self, key, key_modifiers):
         self.change_game_state(key)
