@@ -33,3 +33,10 @@ def has_tree():
     if tree == 1:
         return True
     return False
+
+
+def save_highscore(score):
+    with open('score.txt','a') as s:
+        s.write(score)
+        s.write('\n')
+        s.close()
