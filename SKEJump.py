@@ -2,7 +2,7 @@ import time
 import arcade
 import physics
 from random import randint
-from models import FPSCounter, rand_map, has_tree
+from models import FPSCounter, rand_map, has_tree, save_highscore
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -37,16 +37,24 @@ class GameWindow(arcade.Window):
 
         self.score = 0
 
+        self.write_score = False
+
         self.game_state = 'freeze'
 
         self.fps = FPSCounter()
 
     def change_game_state(self, key=None):
         if self.player.is_dead:
+            if not self.write_score:
+                save_highscore(str(self.score))
+                self.write_score = True
+
             self.game_state = 'dead'
 
-            if key == arcade.key.SPACE:
+            if key == arcade.key.R:
                 self.score = 0
+
+                self.write_score = False
 
                 self.player.center_x = 100
                 self.player.center_y = GROUND
@@ -60,11 +68,29 @@ class GameWindow(arcade.Window):
                 self.map.generate_map()
 
                 self.game_state = 'freeze'
+            
+            if key == arcade.key.ESCAPE:
+                arcade.close_window()
         
         if self.game_state == 'freeze':
             if key == arcade.key.SPACE:
                 self.game_state = 'running'
                 
+    def dead_draw(self):
+        if self.game_state == 'dead':
+
+            arcade.draw_text(f'Your score : {self.score}',
+                         self.width//2 - 180, self.height//2 + 50,
+                         arcade.color.BLACK, 40)
+
+            arcade.draw_text(f'Press "R" to restart',
+                         self.width//2 - 200, self.height//2,
+                         arcade.color.BLACK, 40)
+            
+            arcade.draw_text(f'Press "ESC" to exit',
+                         self.width//2 - 200, self.height//2 - 50,
+                         arcade.color.BLACK, 40)
+
 
     def update(self, delta):
         self.physics.tree_hit()
@@ -98,10 +124,12 @@ class GameWindow(arcade.Window):
         arcade.draw_text(f'fps {self.fps.get_fps():.0f} ms',
                          SCREEN_WIDTH - 70, SCREEN_HEIGHT - 20,
                          arcade.color.RED, 10)
+        
+        self.dead_draw()
 
     def on_key_press(self, key, key_modifiers):
+        self.change_game_state(key)
         if key == arcade.key.SPACE:
-            self.change_game_state(key)
             if self.physics.can_jump():
                 self.player.change_y = JUMP_SPEED
 
@@ -124,7 +152,7 @@ class Player(arcade.Sprite):
         self.fall()
 
     def fall(self):
-        if self.center_y < 30:
+        if self.center_y < 50:
             self.is_dead = True
 
 
