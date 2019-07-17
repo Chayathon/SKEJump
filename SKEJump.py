@@ -99,7 +99,7 @@ class GameWindow(arcade.Window):
         self.player.update()
         self.change_game_state()
 
-        if not self.player.is_dead and self.game_state == 'running':
+        if (not self.player.is_dead) and (self.game_state == 'running'):
             self.score += 1
             self.physics.update()
             self.map.update_animation()

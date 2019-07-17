@@ -142,8 +142,10 @@ class PhysicsEnginePlatformer:
             elif self.player_sprite.change_y < 0:
                 for item in hit_list:
                     while check_for_collision(self.player_sprite, item):
+                        # Check tree 
+                        if (not item.is_tree):
                         # self.player_sprite.bottom = item.top <- Doesn't work for ramps
-                        self.player_sprite.bottom += 0.25
+                            self.player_sprite.bottom += 0.25
 
                     if item.change_x != 0:
                         self.player_sprite.center_x += item.change_x
