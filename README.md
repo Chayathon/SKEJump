@@ -18,9 +18,9 @@ Clone this repository somewhere on your computer.
 Run ```SKEJump.py``` which is directly inside the repository (path should be SKEJump/SKEJump.py).
 
 ### Gameplay
-- Avoid trees and holes.
-- Press ```space bar``` to jump.
-- Let's fun.
+1. Avoid trees and holes.
+2. Press ```space bar``` to jump.
+3. Let's fun.
 
 ## Reference
 
