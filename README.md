@@ -1,17 +1,37 @@
 # SKE Jump
-Hi! My name is Chayathon Khuttiyanon. This is my first game.
-* To run this game type "python3 SKEJump.py" on your terminal.
 
-Recommend:
-- Python 3.7.0 (or newer)
-- arcade 2.0.8 (or newer)
+## Description
+A python endless game
 
-Backgrond : https://www.kenney.nl/assets/background-elements-redux?fbclid=IwAR3KVGdR_b-aaFyHrfNWj4os0Za4977St8E894TZmcnHNBotqpcylNkKuvM
+## Requirements
+```Python 3.7.0 +```
 
-Platform : https://www.kenney.nl/assets/platformer-art-extended-tileset
+### Libraries
+- ```arcade 2.0.8 +```
 
-Document : http://arcade.academy/quick_index.html#physics-engines-module
+## Information
 
-Bug:
-- still alive when you hit(above) the tree (it because arcade physics platform engine)
-- sometimes die when jump at conner of slope (arcade physics engine too)
+### Installation
+Clone this repository somewhere on your computer.
+
+### Playing
+Run ```SKEJump.py``` which is directly inside the repository (path should be SKEJump/SKEJump.py).
+
+### Gameplay
+1. Avoid trees and holes.
+2. Press ```space bar``` to jump.
+3. Let's fun.
+
+## Reference
+
+### Backgrond
+https://www.kenney.nl/assets/background-elements-redux?fbclid=IwAR3KVGdR_b-aaFyHrfNWj4os0Za4977St8E894TZmcnHNBotqpcylNkKuvM
+
+### Platform
+https://www.kenney.nl/assets/platformer-art-extended-tileset
+
+### Document
+http://arcade.academy/quick_index.html#physics-engines-module
+
+## Bug
+- dead when jump at conner of slope (sometimes)
